@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Müşteri Intake — Türkiye Danışmanlık</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f7f7f5;
+    --surface: #ffffff;
+    --surface2: #f4f3f0;
+    --border: rgba(0,0,0,0.1);
+    --border-md: rgba(0,0,0,0.18);
+    --text: #1a1a18;
+    --text-muted: #6b6b68;
+    --text-hint: #9e9d99;
+    --blue: #185FA5;
+    --blue-light: #E6F1FB;
+    --blue-dark: #0C447C;
+    --green: #3B6D11;
+    --green-light: #EAF3DE;
+    --red: #A32D2D;
+    --red-light: #FCEBEB;
+    --amber: #854F0B;
+    --amber-light: #FAEEDA;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.05);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111110;
+      --surface: #1c1c1a;
+      --surface2: #242422;
+      --border: rgba(255,255,255,0.09);
+      --border-md: rgba(255,255,255,0.15);
+      --text: #f0efe8;
+      --text-muted: #9e9d99;
+      --text-hint: #6b6b68;
+      --blue-light: #0d2d4a;
+      --blue-dark: #85B7EB;
+      --green-light: #172b07;
+      --red-light: #2c0e0e;
+      --amber-light: #2c1a04;
+      --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
+    }
+  }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 14px;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+
+  /* Layout */
+  .app-shell { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 220px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 1.25rem 1rem;
+    flex-shrink: 0;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 10;
+  }
+  .sidebar-logo {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--blue);
+    padding: 4px 8px 12px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .sidebar-logo span { color: var(--text-muted); font-weight: 400; display: block; font-size: 11px; margin-top: 1px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-muted);
+    transition: background .12s, color .12s;
+    border: none; background: none; width: 100%; text-align: left;
+  }
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { background: var(--blue-light); color: var(--blue); font-weight: 500; }
+  .nav-item .ti { font-size: 16px; }
+  .sidebar-footer { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--border); }
+
+  .main { margin-left: 220px; padding: 2rem; max-width: 860px; }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.25rem;
+    box-shadow: var(--shadow);
+  }
+  .card + .card, .card + div, div + .card { margin-top: 10px; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; font-size: 13px; font-weight: 500;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-md);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    transition: background .12s, transform .08s;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  .btn:hover { background: var(--surface2); }
+  .btn:active { transform: scale(.98); }
+  .btn-primary { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .btn-primary:hover { background: var(--blue-dark); border-color: var(--blue-dark); color: #fff; }
+  .btn-danger { background: var(--red); border-color: var(--red); color: #fff; }
+  .btn-danger:hover { background: #791F1F; border-color: #791F1F; color: #fff; }
+  .btn-success { background: var(--green); border-color: var(--green); color: #fff; }
+  .btn-success:hover { background: #27500A; }
+  .btn-sm { padding: 4px 10px; font-size: 12px; }
+  .btn-icon { padding: 6px 8px; }
+
+  /* Inputs */
+  input, select, textarea {
+    font-family: inherit; font-size: 13px;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border-md);
+    border-radius: var(--radius-sm);
+    padding: 8px 10px;
+    width: 100%;
+    outline: none;
+    transition: border-color .12s, box-shadow .12s;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(24,95,165,.15);
+  }
+  textarea { resize: vertical; min-height: 64px; }
+  label.form-label { display: block; font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 4px; }
+  .form-group { margin-bottom: 12px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* Tags */
+  .tag { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .tag-req { background: var(--red-light); color: var(--red); }
+  .tag-opt { background: var(--green-light); color: var(--green); }
+  .tag-info { background: var(--blue-light); color: var(--blue-dark); }
+
+  /* Badges */
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-blue { background: var(--blue-light); color: var(--blue-dark); }
+  .badge-green { background: var(--green-light); color: var(--green); }
+  .badge-amber { background: var(--amber-light); color: var(--amber); }
+  .badge-red { background: var(--red-light); color: var(--red); }
+
+  /* Alert boxes */
+  .alert { padding: 10px 14px; border-radius: var(--radius-sm); font-size: 13px; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 8px; }
+  .alert-warn { background: var(--amber-light); color: var(--amber); border: 1px solid #EF9F27; }
+  .alert-success { background: var(--green-light); color: var(--green); border: 1px solid #639922; }
+  .alert-error { background: var(--red-light); color: var(--red); border: 1px solid #E24B4A; }
+  .alert-info { background: var(--blue-light); color: var(--blue-dark); border: 1px solid #378ADD; }
+
+  /* Page headers */
+  .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+  .page-title { font-size: 17px; font-weight: 600; }
+  .page-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  /* Steps */
+  .steps { display: flex; gap: 0; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
+  .step-item { padding: 9px 18px; font-size: 13px; color: var(--text-muted); border-bottom: 2px solid transparent; cursor: default; }
+  .step-item.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 500; }
+  .step-item.done { color: var(--green); }
+
+  /* Record card */
+  .record-row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px;
+    cursor: pointer;
+    transition: border-color .12s, box-shadow .12s;
+    margin-bottom: 8px;
+  }
+  .record-row:hover { border-color: var(--border-md); box-shadow: var(--shadow); }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--blue-light); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--blue-dark); flex-shrink: 0; }
+
+  /* Checklist */
+  .cl-item { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+  .cl-item:last-child { border-bottom: none; }
+  .cl-item input[type=checkbox] { width: 15px; height: 15px; flex-shrink: 0; margin-top: 2px; accent-color: var(--blue); cursor: pointer; }
+  .cl-note { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  /* Option pills */
+  .opt-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 13px; border: 1px solid var(--border-md); border-radius: 20px; cursor: pointer; font-size: 13px; background: var(--surface2); color: var(--text-muted); transition: all .12s; user-select: none; }
+  .opt-pill:hover { border-color: var(--blue); color: var(--text); }
+  .opt-pill.sel { background: var(--blue-light); border-color: var(--blue); color: var(--blue-dark); font-weight: 500; }
+
+  /* Section header */
+  .sec-header { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px; color: var(--blue); margin-bottom: 10px; }
+
+  /* Admin editable item */
+  .admin-item { display: flex; align-items: flex-start; gap: 8px; padding: 9px; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 6px; background: var(--surface); }
+
+  /* Progress bar */
+  .progress-bar { height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+  .progress-fill { height: 100%; background: var(--blue); border-radius: 3px; transition: width .3s; }
+
+  /* Sub tabs */
+  .sub-tabs { display: flex; gap: 0; margin-bottom: 1rem; border-bottom: 1px solid var(--border); }
+  .sub-tab { padding: 8px 16px; font-size: 13px; cursor: pointer; border: none; background: none; color: var(--text-muted); border-bottom: 2px solid transparent; border-radius: 0; transition: color .12s; font-family: inherit; }
+  .sub-tab:hover { color: var(--text); background: none; }
+  .sub-tab.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 500; }
+
+  pre { white-space: pre-wrap; word-break: break-all; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+
+  @media (max-width: 700px) {
+    .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; flex-wrap: wrap; }
+    .main { margin-left: 0; padding: 1rem; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <i class="ti ti-building-bank"></i> TR Danışmanlık
+      <span>Müşteri Intake Sistemi</span>
+    </div>
+    <button class="nav-item active" id="nav-records" onclick="navigate('records')">
+      <i class="ti ti-users"></i> Kayıtlar
+    </button>
+    <button class="nav-item" id="nav-admin" onclick="tryAdmin()">
+      <i class="ti ti-settings"></i> Yönetim
+    </button>
+    <div class="sidebar-footer">
+      <div style="font-size:11px;color:var(--text-hint);padding:0 8px">Veriler bu tarayıcıda saklanır</div>
+    </div>
+  </aside>
+
+  <main class="main" id="main-content"></main>
+</div>
+
+<script>
+const KEY_CFG = 'tr_intake_cfg_v3';
+const KEY_REC = 'tr_intake_rec_v3';
+
+const DEFAULT_CFG = {
+  adminPass: 'admin123',
+  webhookUrl: '',
+  questions: [
+    {id:'q1', text:'Vatandaşlık / uyruk', type:'single', options:['TC vatandaşı','AB ülkesi','Diğer yabancı uyruk','Çift vatandaş']},
+    {id:'q2', text:'Şu an nerede ikamet ediyor?', type:'single', options:['Yurt dışında','Türkiye\'de']},
+    {id:'q3', text:'Hedef (birden fazla seçilebilir)', type:'multi', options:['Şirket kurmak','Türkiye\'ye yerleşmek','Vergi optimizasyonu','Varlık barışı']},
+    {id:'q4', text:'Yapı türü', type:'single', options:['Şahıs / serbest meslek','Limited şirket (Ltd.)','Anonim şirket (A.Ş.)','Henüz bilmiyor']},
+    {id:'q5', text:'Faaliyet alanı', type:'single', options:['Teknoloji / yazılım / dijital','Ticaret / ithalat-ihracat','Danışmanlık / profesyonel hizmet','Gayrimenkul / yatırım','Diğer']},
+    {id:'q6', text:'Gelirin kaynağı', type:'single', options:['Yalnızca yurt dışı müşteriler','Hem yurt dışı hem Türkiye','Yalnızca Türkiye']},
+  ],
+  sections: [
+    {id:'s1', title:'Kimlik & Kişisel Belgeler', icon:'ti-id', items:[
+      {id:'i1', text:'Pasaport (geçerlilik min. 6 ay)', tag:'req', note:'', cond:''},
+      {id:'i2', text:'TC kimlik kartı', tag:'req', note:'Yalnızca TC vatandaşları için', cond:'q1:TC vatandaşı'},
+      {id:'i3', text:'Apostilli nüfus kayıt belgesi + noter onaylı Türkçe tercümesi', tag:'req', note:'Yabancı uyruklu gerçek kişiler için', cond:'q1:AB ülkesi|q1:Diğer yabancı uyruk|q1:Çift vatandaş'},
+      {id:'i4', text:'Vergi numarası başvurusu (yabancı gerçek kişi)', tag:'req', note:'Herhangi bir vergi dairesine bizzat başvuru', cond:'q1:AB ülkesi|q1:Diğer yabancı uyruk'},
+      {id:'i5', text:'İkametgah belgesi / adres teyit (mevcut ülkeden)', tag:'req', note:'', cond:''},
+      {id:'i6', text:'Biyometrik fotoğraf (6 ay içinde çekilmiş, 4 adet)', tag:'req', note:'', cond:''},
+    ]},
+    {id:'s2', title:'Şirket Kuruluşu — Şahıs', icon:'ti-user-circle', items:[
+      {id:'i10', text:'Vergi dairesi mükellefiyet kaydı', tag:'req', note:'', cond:'q4:Şahıs / serbest meslek'},
+      {id:'i11', text:'Meslek odası kaydı (faaliyet alanına göre)', tag:'opt', note:'', cond:'q4:Şahıs / serbest meslek'},
+      {id:'i12', text:'Serbest meslek makbuz defteri / e-SMM aktivasyonu', tag:'req', note:'', cond:'q4:Şahıs / serbest meslek'},
+    ]},
+    {id:'s3', title:'Şirket Kuruluşu — Ltd. / A.Ş.', icon:'ti-building', items:[
+      {id:'i20', text:'Şirket ana sözleşmesi (noter onaylı)', tag:'req', note:'', cond:'q4:Limited şirket (Ltd.)|q4:Anonim şirket (A.Ş.)'},
+      {id:'i21', text:'Ticaret Sicili tescil başvurusu (MERSİS)', tag:'req', note:'https://mersis.gtb.gov.tr', cond:'q4:Limited şirket (Ltd.)|q4:Anonim şirket (A.Ş.)'},
+      {id:'i22', text:'Sermaye banka blokaj mektubu', tag:'req', note:'Ltd min. 10.000 TL / A.Ş. min. 50.000 TL', cond:'q4:Limited şirket (Ltd.)|q4:Anonim şirket (A.Ş.)'},
+      {id:'i23', text:'İmza sirküleri (noter onaylı)', tag:'req', note:'', cond:'q4:Limited şirket (Ltd.)|q4:Anonim şirket (A.Ş.)'},
+      {id:'i24', text:'Tüm ortakların vergi numaraları', tag:'req', note:'', cond:'q4:Limited şirket (Ltd.)|q4:Anonim şirket (A.Ş.)'},
+      {id:'i25', text:'Şirket adresi belgesi (sanal ofis / kira sözleşmesi)', tag:'req', note:'', cond:''},
+      {id:'i26', text:'Muhasebeci / mali müşavir sözleşmesi', tag:'req', note:'', cond:''},
+      {id:'i27', text:'Yabancı ortak apostilli kimlik belgesi + Türkçe tercüme', tag:'req', note:'', cond:'q1:AB ülkesi|q1:Diğer yabancı uyruk|q1:Çift vatandaş'},
+    ]},
+    {id:'s4', title:'İkamet İzni', icon:'ti-home', items:[
+      {id:'i30', text:'İkamet izni başvuru formu (e-ikamet)', tag:'req', note:'https://e-ikamet.goc.gov.tr — online randevu zorunlu', cond:'q3:Türkiye\'ye yerleşmek'},
+      {id:'i31', text:'Pasaport Türkçe noter tercümesi', tag:'req', note:'', cond:'q3:Türkiye\'ye yerleşmek'},
+      {id:'i32', text:'Kira sözleşmesi veya tapu (adres belgesi)', tag:'req', note:'', cond:'q3:Türkiye\'ye yerleşmek'},
+      {id:'i33', text:'Geçim kaynağını gösterir belge', tag:'req', note:'Banka ekstresi / gelir belgesi / şirket ortaklık belgesi', cond:'q3:Türkiye\'ye yerleşmek'},
+      {id:'i34', text:'Sağlık sigortası poliçesi (Türkiye geçerli, tüm süre)', tag:'req', note:'Özel SGK muafiyeti sigortası yeterli olabilir', cond:'q3:Türkiye\'ye yerleşmek'},
+      {id:'i35', text:'İkamet harcı ödeme makbuzu', tag:'req', note:'', cond:'q3:Türkiye\'ye yerleşmek'},
+    ]},
+    {id:'s5', title:'Vergi Muafiyeti & Optimizasyon', icon:'ti-receipt-tax', items:[
+      {id:'i40', text:'Yurt dışı faaliyet gelir belgesi / imzalı sözleşmeler', tag:'req', note:'Hizmetin yurt dışında kullanıldığını ispat için', cond:'q3:Vergi optimizasyonu'},
+      {id:'i41', text:'Yabancı müşteri ödeme kayıtları (SWIFT / havale)', tag:'req', note:'', cond:'q3:Vergi optimizasyonu'},
+      {id:'i42', text:'Döviz geliri banka ekstresi', tag:'req', note:'', cond:'q3:Vergi optimizasyonu'},
+      {id:'i43', text:'KV %50 indirim dilekçesi (yurt dışı hizmet)', tag:'req', note:'Hizmetin münhasıran yurt dışında kullanılması şartı', cond:'q3:Vergi optimizasyonu'},
+      {id:'i44', text:'ÇVÖ anlaşması değerlendirmesi (çifte vergilendirme)', tag:'opt', note:'Türkiye 90+ ülkeyle anlaşma imzalamış', cond:'q3:Vergi optimizasyonu'},
+      {id:'i45', text:'Mali müşavir vergi optimizasyon raporu', tag:'opt', note:'', cond:'q3:Vergi optimizasyonu'},
+    ]},
+    {id:'s6', title:'Varlık Barışı', icon:'ti-safe', items:[
+      {id:'i50', text:'Yurt dışı varlık envanteri (banka, gayrimenkul, menkul)', tag:'req', note:'', cond:'q3:Varlık barışı'},
+      {id:'i51', text:'Varlık kaynağını ispat belgeleri', tag:'req', note:'Banka ekstresi, tapu, hisse senedi vb.', cond:'q3:Varlık barışı'},
+      {id:'i52', text:'Türkiye banka hesabı (transfer için)', tag:'req', note:'', cond:'q3:Varlık barışı'},
+      {id:'i53', text:'Vergi dairesi varlık barışı beyan formu', tag:'req', note:'', cond:'q3:Varlık barışı'},
+      {id:'i54', text:'%3 vergi ödeme makbuzu', tag:'req', note:'Güncel oran ve son tarihi teyit ediniz', cond:'q3:Varlık barışı'},
+      {id:'i55', text:'Mali müşavir beyanı ve imzası', tag:'req', note:'', cond:'q3:Varlık barışı'},
+    ]},
+    {id:'s7', title:'Genel Kontroller', icon:'ti-clipboard-check', items:[
+      {id:'i60', text:'Tüm yabancı belgelerin apostil / konsolosluk onayı', tag:'req', note:'', cond:''},
+      {id:'i61', text:'Yeminli tercüman onaylı Türkçe çeviriler', tag:'req', note:'', cond:''},
+      {id:'i62', text:'Belge geçerlilik tarihleri kontrolü (min. 6 ay)', tag:'req', note:'', cond:''},
+      {id:'i63', text:'Vekâletname (danışman adına işlem yapılacaksa)', tag:'opt', note:'Noterden + apostil gerekebilir', cond:''},
+      {id:'i64', text:'Mali müşavir ve avukat görevlendirmesi', tag:'req', note:'', cond:''},
+    ]},
+  ]
+};
+
+// ── State ───────────────────────────────────────────────────────────────────
+let cfg = (() => { try { const s = localStorage.getItem(KEY_CFG); return s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_CFG)); } catch(e) { return JSON.parse(JSON.stringify(DEFAULT_CFG)); } })();
+let records = (() => { try { const s = localStorage.getItem(KEY_REC); return s ? JSON.parse(s) : []; } catch(e) { return []; } })();
+let view = 'records';
+let currentRec = null;
+let adminAuthed = false;
+let adminTab = 'questions';
+
+function saveCfg() { localStorage.setItem(KEY_CFG, JSON.stringify(cfg)); }
+function saveRec() { localStorage.setItem(KEY_REC, JSON.stringify(records)); }
+function uid() { return 'id_' + Date.now() + '_' + Math.random().toString(36).slice(2,6); }
+
+// ── Routing ─────────────────────────────────────────────────────────────────
+function navigate(v) {
+  view = v;
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  const nav = document.getElementById('nav-' + v);
+  if(nav) nav.classList.add('active');
+  render();
+}
+
+function tryAdmin() {
+  if(!adminAuthed) {
+    const pw = prompt('Yönetim paneli şifresi:');
+    if(pw === null) return;
+    if(pw !== cfg.adminPass) { alert('Yanlış şifre.'); return; }
+    adminAuthed = true;
+  }
+  view = 'admin';
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('nav-admin').classList.add('active');
+  render();
+}
+
+function render() {
+  const el = document.getElementById('main-content');
+  if(view === 'records') el.innerHTML = renderRecords();
+  else if(view === 'form') el.innerHTML = renderForm();
+  else if(view === 'detail') el.innerHTML = renderDetail();
+  else if(view === 'admin') el.innerHTML = renderAdmin();
+  attachEvents();
+}
+
+// ── Helpers ─────────────────────────────────────────────────────────────────
+function matchCond(item, answers) {
+  if(!item.cond) return true;
+  return item.cond.split('|').some(p => {
+    const [qid, val] = p.split(':');
+    const a = answers[qid];
+    if(!a) return false;
+    return Array.isArray(a) ? a.includes(val) : a === val;
+  });
+}
+
+function filteredSections(answers) {
+  return cfg.sections.map(s => ({...s, items: s.items.filter(it => matchCond(it, answers))})).filter(s => s.items.length > 0);
+}
+
+function initials(name) {
+  return (name||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+}
+
+function tagLabel(t) {
+  return t === 'req' ? 'Zorunlu' : t === 'opt' ? 'Önerilen' : 'Bilgi';
+}
+
+function countProgress(rec) {
+  const secs = filteredSections(rec.answers || {});
+  const all = secs.length ? secs : cfg.sections;
+  let total = 0, checked = 0;
+  all.forEach(s => s.items.forEach(it => { total++; if(rec.checklist && rec.checklist[it.id]) checked++; }));
+  return {total, checked};
+}
+
+// ── Records list ─────────────────────────────────────────────────────────────
+function renderRecords() {
+  const empty = records.length === 0;
+  return `
+    <div class="page-header">
+      <div>
+        <div class="page-title">Müşteri kayıtları</div>
+        <div class="page-subtitle">${records.length} kayıt</div>
+      </div>
+      <button class="btn btn-primary" onclick="startNew()"><i class="ti ti-plus"></i> Yeni kayıt</button>
+    </div>
+    ${empty ? `
+      <div style="text-align:center;padding:3rem 1rem;color:var(--text-muted)">
+        <i class="ti ti-users" style="font-size:40px;display:block;margin-bottom:12px;opacity:.4"></i>
+        <div style="font-weight:500;margin-bottom:4px">Henüz kayıt yok</div>
+        <div style="font-size:13px">Yeni kayıt butonuyla başlayın</div>
+      </div>` :
+      records.map(r => {
+        const {checked, total} = countProgress(r);
+        const pct = total ? Math.round(checked/total*100) : 0;
+        return `
+          <div class="record-row" onclick="openRec('${r.id}')">
+            <div class="avatar">${initials(r.contact.name)}</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-weight:500;font-size:14px">${r.contact.name || 'İsimsiz'}</div>
+              <div style="font-size:12px;color:var(--text-muted)">${r.contact.email || ''} ${r.contact.phone ? '· ' + r.contact.phone : ''}</div>
+              <div class="progress-bar" style="max-width:180px"><div class="progress-fill" style="width:${pct}%"></div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+              <span style="font-size:12px;color:var(--text-muted)">${checked}/${total}</span>
+              <span class="badge ${r.sent ? 'badge-green' : 'badge-amber'}">${r.sent ? 'Gönderildi' : 'Bekliyor'}</span>
+              <span style="font-size:12px;color:var(--text-hint)">${new Date(r.createdAt).toLocaleDateString('tr-TR')}</span>
+              <button class="btn btn-sm" onclick="event.stopPropagation();editRec('${r.id}')"><i class="ti ti-edit"></i></button>
+              <button class="btn btn-sm btn-danger" onclick="event.stopPropagation();delRec('${r.id}')"><i class="ti ti-trash"></i></button>
+            </div>
+          </div>`;
+      }).join('')
+    }
+  `;
+}
+
+// ── Form ─────────────────────────────────────────────────────────────────────
+function startNew() {
+  currentRec = { id: uid(), createdAt: new Date().toISOString(), contact: {name:'',email:'',phone:'',city:'',notes:''}, answers: {}, checklist: {}, sent: false, step: 'contact' };
+  view = 'form';
+  render();
+}
+
+function renderForm() {
+  const steps = ['contact','questions','checklist'];
+  const si = steps.indexOf(currentRec.step);
+  const labels = ['İletişim', 'Sorular', 'Check list'];
+
+  let body = '';
+  if(currentRec.step === 'contact') {
+    body = `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Ad Soyad *</label><input id="f_name" value="${currentRec.contact.name}" placeholder="Ahmet Yılmaz"></div>
+        <div class="form-group"><label class="form-label">E-posta *</label><input id="f_email" type="email" value="${currentRec.contact.email}" placeholder="ahmet@ornek.com"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Telefon</label><input id="f_phone" value="${currentRec.contact.phone}" placeholder="+90 500 000 00 00"></div>
+        <div class="form-group"><label class="form-label">Şehir / Ülke</label><input id="f_city" value="${currentRec.contact.city||''}" placeholder="İstanbul / Almanya"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Notlar</label><textarea id="f_notes" placeholder="Ek bilgi...">${currentRec.contact.notes}</textarea></div>
+    `;
+  } else if(currentRec.step === 'questions') {
+    body = cfg.questions.map(q => `
+      <div class="card" style="margin-bottom:10px">
+        <div style="font-weight:500;font-size:14px;margin-bottom:10px">${q.text}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          ${q.options.map(opt => {
+            const ans = currentRec.answers[q.id];
+            const sel = Array.isArray(ans) ? ans.includes(opt) : ans === opt;
+            return `<label class="opt-pill ${sel?'sel':''}" data-qid="${q.id}" data-val="${opt.replace(/"/g,'&quot;')}" data-type="${q.type}">${opt}</label>`;
+          }).join('')}
+        </div>
+      </div>
+    `).join('');
+  } else {
+    const secs = filteredSections(currentRec.answers);
+    body = (secs.length ? secs : cfg.sections).map(sec => `
+      <div class="card" style="margin-bottom:10px">
+        <div class="sec-header"><i class="ti ${sec.icon||'ti-list'}"></i>${sec.title}</div>
+        ${sec.items.map(it => `
+          <div class="cl-item">
+            <input type="checkbox" data-iid="${it.id}" ${currentRec.checklist[it.id]?'checked':''}>
+            <div style="flex:1"><div>${it.text}</div>${it.note?`<div class="cl-note">${it.note}</div>`:''}</div>
+            <span class="tag tag-${it.tag}">${tagLabel(it.tag)}</span>
+          </div>
+        `).join('')}
+      </div>
+    `).join('');
+  }
+
+  return `
+    <div class="page-header">
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="btn btn-icon" onclick="view='records';render()"><i class="ti ti-arrow-left"></i></button>
+        <div>
+          <div class="page-title">Yeni kayıt</div>
+          <div class="page-subtitle">${currentRec.contact.name||'İsimsiz müşteri'}</div>
+        </div>
+      </div>
+    </div>
+    <div class="steps">
+      ${labels.map((l,i) => `<div class="step-item ${i===si?'active':i<si?'done':''}">${i<si?'<i class="ti ti-check" style="font-size:12px"></i> ':''}${i+1}. ${l}</div>`).join('')}
+    </div>
+    ${body}
+    <div style="display:flex;justify-content:space-between;margin-top:1.25rem;padding-top:12px;border-top:1px solid var(--border)">
+      <button class="btn" onclick="formBack()" ${si===0?'style="visibility:hidden"':''}><i class="ti ti-arrow-left"></i> Geri</button>
+      <button class="btn btn-primary" onclick="formNext()">${si===steps.length-1?'<i class="ti ti-device-floppy"></i> Kaydet':'İleri <i class="ti ti-arrow-right"></i>'}</button>
+    </div>
+  `;
+}
+
+function formBack() {
+  const steps = ['contact','questions','checklist'];
+  const i = steps.indexOf(currentRec.step);
+  if(i > 0) { currentRec.step = steps[i-1]; render(); }
+}
+
+function formNext() {
+  const steps = ['contact','questions','checklist'];
+  const i = steps.indexOf(currentRec.step);
+  if(i === 0) {
+    const name = document.getElementById('f_name').value.trim();
+    const email = document.getElementById('f_email').value.trim();
+    if(!name || !email) { alert('Ad soyad ve e-posta zorunludur.'); return; }
+    currentRec.contact = { name, email, phone: document.getElementById('f_phone').value.trim(), city: document.getElementById('f_city').value.trim(), notes: document.getElementById('f_notes').value.trim() };
+    currentRec.step = 'questions'; render();
+  } else if(i === 1) {
+    currentRec.step = 'checklist'; render();
+  } else {
+    const existing = records.findIndex(r => r.id === currentRec.id);
+    if(existing > -1) records[existing] = currentRec;
+    else records.unshift(currentRec);
+    saveRec();
+    view = 'detail'; render();
+  }
+}
+
+// ── Detail ───────────────────────────────────────────────────────────────────
+function openRec(id) { currentRec = records.find(r=>r.id===id); view='detail'; render(); }
+function editRec(id) { currentRec = records.find(r=>r.id===id); currentRec.step='contact'; view='form'; render(); }
+function delRec(id) {
+  if(!confirm('Bu kaydı silmek istediğinizden emin misiniz?')) return;
+  records = records.filter(r=>r.id!==id); saveRec(); render();
+}
+
+function renderDetail() {
+  const r = currentRec;
+  const secs = filteredSections(r.answers || {});
+  const {checked, total} = countProgress(r);
+
+  const qSummary = cfg.questions.map(q => {
+    const a = r.answers[q.id];
+    if(!a) return '';
+    return `<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--text-muted)">${q.text}</span><span style="font-weight:500;text-align:right;max-width:55%">${Array.isArray(a)?a.join(', '):a}</span></div>`;
+  }).join('');
+
+  return `
+    <div class="page-header">
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="btn btn-icon" onclick="view='records';render()"><i class="ti ti-arrow-left"></i></button>
+        <div>
+          <div class="page-title">${r.contact.name}</div>
+          <div class="page-subtitle">${new Date(r.createdAt).toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'})}</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn" onclick="editRec('${r.id}')"><i class="ti ti-edit"></i> Düzenle</button>
+        <button class="btn btn-success" onclick="sendWebhook('${r.id}')"><i class="ti ti-send"></i> Verileri gönder</button>
+      </div>
+    </div>
+    <div id="send-status"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div class="card">
+        <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px">İletişim</div>
+        <table style="width:100%;font-size:13px;border-collapse:collapse">
+          <tr><td style="color:var(--text-muted);padding:4px 0;width:35%"><i class="ti ti-user" style="font-size:13px;vertical-align:-2px"></i> Ad</td><td style="padding:4px 0">${r.contact.name}</td></tr>
+          <tr><td style="color:var(--text-muted);padding:4px 0"><i class="ti ti-mail" style="font-size:13px;vertical-align:-2px"></i> Mail</td><td style="padding:4px 0">${r.contact.email}</td></tr>
+          ${r.contact.phone?`<tr><td style="color:var(--text-muted);padding:4px 0"><i class="ti ti-phone" style="font-size:13px;vertical-align:-2px"></i> Tel</td><td style="padding:4px 0">${r.contact.phone}</td></tr>`:''}
+          ${r.contact.city?`<tr><td style="color:var(--text-muted);padding:4px 0"><i class="ti ti-map-pin" style="font-size:13px;vertical-align:-2px"></i> Şehir</td><td style="padding:4px 0">${r.contact.city}</td></tr>`:''}
+        </table>
+        ${r.contact.notes?`<div class="divider"></div><div style="font-size:12px;color:var(--text-muted)">${r.contact.notes}</div>`:''}
+      </div>
+      <div class="card">
+        <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px">Müşteri profili</div>
+        ${qSummary || '<div style="color:var(--text-muted);font-size:13px">Soru yanıtlanmadı</div>'}
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div style="font-size:14px;font-weight:600">Check list</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:13px;color:var(--text-muted)">${checked} / ${total} tamamlandı</span>
+        <span class="badge ${r.sent?'badge-green':'badge-amber'}">${r.sent?'Gönderildi':'Bekliyor'}</span>
+      </div>
+    </div>
+    ${(secs.length ? secs : cfg.sections).map(sec => `
+      <div class="card" style="margin-bottom:8px">
+        <div class="sec-header"><i class="ti ${sec.icon||'ti-list'}"></i>${sec.title}</div>
+        ${sec.items.map(it => `
+          <div class="cl-item">
+            <input type="checkbox" data-iid="${it.id}" data-rid="${r.id}" class="det-check" ${r.checklist[it.id]?'checked':''}>
+            <div style="flex:1"><div>${it.text}</div>${it.note?`<div class="cl-note">${it.note}</div>`:''}</div>
+            <span class="tag tag-${it.tag}">${tagLabel(it.tag)}</span>
+          </div>
+        `).join('')}
+      </div>
+    `).join('')}
+  `;
+}
+
+// ── Admin ─────────────────────────────────────────────────────────────────────
+function renderAdmin() {
+  return `
+    <div class="page-header">
+      <div>
+        <div class="page-title">Yönetim paneli</div>
+        <div class="page-subtitle">Sorular, check list ve sistem ayarları</div>
+      </div>
+      <span class="badge badge-blue"><i class="ti ti-shield-check" style="font-size:12px"></i> Admin</span>
+    </div>
+    <div class="sub-tabs">
+      ${[['questions','Sorular'],['sections','Check list'],['webhook','Webhook & Ayarlar']].map(([k,l])=>`
+        <button class="sub-tab ${adminTab===k?'active':''}" onclick="adminTab='${k}';render()">${l}</button>
+      `).join('')}
+    </div>
+    <div id="admin-body">${renderAdminBody()}</div>
+  `;
+}
+
+function renderAdminBody() {
+  if(adminTab === 'questions') return renderAdminQ();
+  if(adminTab === 'sections') return renderAdminS();
+  return renderAdminW();
+}
+
+function renderAdminQ() {
+  return `
+    <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+      <button class="btn btn-primary" onclick="addQ()"><i class="ti ti-plus"></i> Soru ekle</button>
+    </div>
+    ${cfg.questions.map((q,qi) => `
+      <div class="card" style="margin-bottom:8px">
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <div style="flex:1">
+            <div style="font-weight:500;font-size:14px;margin-bottom:4px">${q.text}</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px">${q.type==='multi'?'Çoklu seçim':'Tek seçim'} · ${q.options.length} seçenek</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px">
+              ${q.options.map((o,oi)=>`
+                <span style="background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:12px;display:inline-flex;align-items:center;gap:6px">
+                  ${o}
+                  <span style="cursor:pointer;color:var(--text-muted);font-size:16px;line-height:1" onclick="removeOpt(${qi},${oi})">×</span>
+                </span>`).join('')}
+              <span style="background:var(--surface2);border:1px dashed var(--border-md);border-radius:20px;padding:3px 10px;font-size:12px;cursor:pointer;color:var(--text-muted)" onclick="addOpt(${qi})">+ seçenek</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-sm btn-icon" onclick="editQ(${qi})"><i class="ti ti-edit" style="font-size:13px"></i></button>
+            <button class="btn btn-sm btn-danger btn-icon" onclick="delQ(${qi})"><i class="ti ti-trash" style="font-size:13px"></i></button>
+          </div>
+        </div>
+      </div>
+    `).join('')}
+  `;
+}
+
+function renderAdminS() {
+  return `
+    <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+      <button class="btn btn-primary" onclick="addSec()"><i class="ti ti-plus"></i> Bölüm ekle</button>
+    </div>
+    ${cfg.sections.map((sec,si) => `
+      <div class="card" style="margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <i class="ti ${sec.icon||'ti-list'}" style="font-size:16px;color:var(--blue)"></i>
+          <div style="font-weight:600;font-size:14px;flex:1">${sec.title}</div>
+          <button class="btn btn-sm" onclick="addItem(${si})"><i class="ti ti-plus"></i> Madde</button>
+          <button class="btn btn-sm btn-danger btn-icon" onclick="delSec(${si})"><i class="ti ti-trash" style="font-size:13px"></i></button>
+        </div>
+        ${sec.items.map((it,ii) => `
+          <div class="admin-item">
+            <div style="flex:1">
+              <div style="font-size:13px">${it.text}</div>
+              ${it.note?`<div class="cl-note">${it.note}</div>`:''}
+              ${it.cond?`<div style="font-size:11px;color:var(--text-hint);margin-top:2px"><i class="ti ti-filter" style="font-size:11px"></i> ${it.cond}</div>`:''}
+            </div>
+            <span class="tag tag-${it.tag}">${tagLabel(it.tag)}</span>
+            <button class="btn btn-sm btn-icon" onclick="editItem(${si},${ii})"><i class="ti ti-edit" style="font-size:13px"></i></button>
+            <button class="btn btn-sm btn-danger btn-icon" onclick="delItem(${si},${ii})"><i class="ti ti-trash" style="font-size:13px"></i></button>
+          </div>
+        `).join('')}
+      </div>
+    `).join('')}
+  `;
+}
+
+function renderAdminW() {
+  return `
+    <div class="card" style="margin-bottom:10px">
+      <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px">Webhook</div>
+      <div class="form-group">
+        <label class="form-label">Webhook URL</label>
+        <input id="wh_url" value="${cfg.webhookUrl}" placeholder="https://hooks.zapier.com/... veya https://your-api.com/webhook">
+      </div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Veriler JSON olarak POST ile gönderilir. Make, Zapier, n8n ve özel API desteklenir.</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary" onclick="saveWH()"><i class="ti ti-device-floppy"></i> Kaydet</button>
+        <button class="btn" onclick="testWH()"><i class="ti ti-send"></i> Test gönder</button>
+      </div>
+      <div id="wh-status" style="margin-top:10px"></div>
+    </div>
+    <div class="card" style="margin-bottom:10px">
+      <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px">Güvenlik</div>
+      <div class="form-group">
+        <label class="form-label">Admin şifresi</label>
+        <input id="adm_pw" type="password" value="${cfg.adminPass}">
+      </div>
+      <button class="btn btn-primary" onclick="savePW()"><i class="ti ti-device-floppy"></i> Şifreyi güncelle</button>
+    </div>
+    <div class="card">
+      <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">Örnek JSON payload</div>
+      <pre style="font-size:11px;background:var(--surface2);padding:10px;border-radius:6px;overflow-x:auto">${JSON.stringify({record_id:"id_xxx",created_at:"2026-06-01T10:00:00Z",contact:{name:"Ahmet Yılmaz",email:"ahmet@ornek.com",phone:"+90 500",city:"İstanbul"},answers:{q1:"TC vatandaşı",q3:["Şirket kurmak"]},checklist_summary:{checked:8,total:14},checklist_items:{"i1":{text:"Pasaport",tag:"req",checked:true}}},null,2)}</pre>
+    </div>
+  `;
+}
+
+// ── Admin actions ─────────────────────────────────────────────────────────────
+function addQ() { const t=prompt('Soru:'); if(!t) return; const m=confirm('Çoklu seçim mi?'); cfg.questions.push({id:uid(),text:t,type:m?'multi':'single',options:[]}); saveCfg(); render(); }
+function editQ(qi) { const t=prompt('Soru:',cfg.questions[qi].text); if(!t) return; cfg.questions[qi].text=t; saveCfg(); render(); }
+function delQ(qi) { if(!confirm('Sil?')) return; cfg.questions.splice(qi,1); saveCfg(); render(); }
+function addOpt(qi) { const v=prompt('Yeni seçenek:'); if(!v) return; cfg.questions[qi].options.push(v); saveCfg(); render(); }
+function removeOpt(qi,oi) { cfg.questions[qi].options.splice(oi,1); saveCfg(); render(); }
+function addSec() { const t=prompt('Bölüm başlığı:'); if(!t) return; cfg.sections.push({id:uid(),title:t,icon:'ti-list',items:[]}); saveCfg(); render(); }
+function delSec(si) { if(!confirm('Bölümü ve tüm maddeleri sil?')) return; cfg.sections.splice(si,1); saveCfg(); render(); }
+function addItem(si) {
+  const t=prompt('Madde:'); if(!t) return;
+  const tag=prompt('Etiket (req/opt/info):','req')||'req';
+  const note=prompt('Not (boş bırakılabilir):','')||'';
+  const cond=prompt('Koşul (örn: q3:Varlık barışı, boş=her zaman göster):','')||'';
+  cfg.sections[si].items.push({id:uid(),text:t,tag,note,cond}); saveCfg(); render();
+}
+function editItem(si,ii) {
+  const it=cfg.sections[si].items[ii];
+  const t=prompt('Madde:',it.text); if(!t) return;
+  it.text=t;
+  it.tag=prompt('Etiket:',it.tag)||it.tag;
+  it.note=prompt('Not:',it.note)||'';
+  it.cond=prompt('Koşul:',it.cond||'')||'';
+  saveCfg(); render();
+}
+function delItem(si,ii) { cfg.sections[si].items.splice(ii,1); saveCfg(); render(); }
+function saveWH() { cfg.webhookUrl=document.getElementById('wh_url').value.trim(); saveCfg(); alert('Kaydedildi.'); }
+function savePW() { const p=document.getElementById('adm_pw').value.trim(); if(!p){alert('Boş olamaz.');return;} cfg.adminPass=p; saveCfg(); alert('Şifre güncellendi.'); }
+async function testWH() {
+  const url=document.getElementById('wh_url').value.trim();
+  if(!url){alert('URL girin.');return;}
+  const el=document.getElementById('wh-status');
+  el.innerHTML=`<div class="alert alert-info"><i class="ti ti-loader"></i> Gönderiliyor...</div>`;
+  try {
+    await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({test:true,source:'tr_intake',ts:new Date().toISOString()}),mode:'no-cors'});
+    el.innerHTML=`<div class="alert alert-success"><i class="ti ti-check"></i> Gönderildi — endpoint'inizde kontrol edin</div>`;
+  } catch(e) {
+    el.innerHTML=`<div class="alert alert-error"><i class="ti ti-x"></i> Hata: ${e.message}</div>`;
+  }
+}
+
+// ── Webhook send ──────────────────────────────────────────────────────────────
+async function sendWebhook(id) {
+  const rec = records.find(r=>r.id===id);
+  if(!rec) return;
+  const el = document.getElementById('send-status');
+  if(!cfg.webhookUrl) {
+    el.innerHTML=`<div class="alert alert-warn"><i class="ti ti-alert-triangle"></i> Webhook URL tanımlı değil. Yönetim > Webhook & Ayarlar bölümünden ekleyin.</div>`;
+    return;
+  }
+  el.innerHTML=`<div class="alert alert-info"><i class="ti ti-loader"></i> Gönderiliyor...</div>`;
+  const {checked,total} = countProgress(rec);
+  const items = {};
+  cfg.sections.forEach(s => s.items.forEach(it => { items[it.id]={text:it.text,tag:it.tag,checked:!!rec.checklist[it.id]}; }));
+  const payload = {
+    record_id: rec.id, created_at: rec.createdAt, sent_at: new Date().toISOString(),
+    contact: rec.contact, answers: rec.answers,
+    checklist_summary: {checked, total},
+    checklist_items: items
+  };
+  try {
+    await fetch(cfg.webhookUrl, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload), mode:'no-cors'});
+    rec.sent = true; rec.sentAt = new Date().toISOString();
+    saveRec();
+    el.innerHTML=`<div class="alert alert-success"><i class="ti ti-check"></i> Başarıyla gönderildi — ${new Date().toLocaleTimeString('tr-TR')}</div>`;
+  } catch(e) {
+    el.innerHTML=`<div class="alert alert-error"><i class="ti ti-x"></i> Hata: ${e.message}</div>`;
+  }
+}
+
+// ── Event delegation ──────────────────────────────────────────────────────────
+function attachEvents() {
+  document.querySelectorAll('.opt-pill').forEach(el => {
+    el.addEventListener('click', () => {
+      const qid = el.dataset.qid, val = el.dataset.val, type = el.dataset.type;
+      if(type === 'single') {
+        currentRec.answers[qid] = val;
+        el.closest('[style*="flex-wrap"]').querySelectorAll('.opt-pill').forEach(p=>p.classList.remove('sel'));
+        el.classList.add('sel');
+      } else {
+        if(!currentRec.answers[qid]) currentRec.answers[qid] = [];
+        const arr = currentRec.answers[qid];
+        const i = arr.indexOf(val);
+        if(i > -1) { arr.splice(i,1); el.classList.remove('sel'); }
+        else { arr.push(val); el.classList.add('sel'); }
+      }
+    });
+  });
+
+  document.querySelectorAll('input[data-iid]').forEach(el => {
+    el.addEventListener('change', () => {
+      const iid = el.dataset.iid, rid = el.dataset.rid;
+      if(rid) {
+        const rec = records.find(r=>r.id===rid);
+        if(rec) { rec.checklist[iid] = el.checked; saveRec(); }
+      } else if(currentRec) {
+        currentRec.checklist[iid] = el.checked;
+      }
+    });
+  });
+}
+
+render();
+</script>
+</body>
+</html>
